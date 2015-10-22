@@ -97,8 +97,9 @@ class Allocator {
 
                 //check for adjacent free blocks
                 //take current sentinel and check behind
-                if(sentinel>begin) {
-                    if(signbit(a[sentinel]) && signbit(a[sentinel-4])) { //check sentinel behind
+                if(sentinel-4 > 0 && sentinel > 0) {
+                    if((a[sentinel] > 0) && (a[sentinel-4] > 0)) { //check sentinel behind
+                        cout << "Failed: Two free blocks side by side" << endl;
                         return false;
                     }
                 }
@@ -181,6 +182,11 @@ class Allocator {
                     else if((begin > (chunk+8)) && begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
                         a[sentinel+begin+4] = -begin;
                         return reinterpret_cast<pointer>(a+sentinel+4);
+                    }
+                    /* If none of the above worked, space is too small to allocate. Must move on to next chunk of space */
+                    else{
+                        int jump = abs(begin) + 8;
+                        sentinel += jump;                        
                     }
 
         	    }
