@@ -1,0 +1,65 @@
+commit 892c8270c7232e05063c2bb17185bdb6ba12a029
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:33:49 2015 -0500
+
+    got allocator's constructor to properly init sentinals
+
+commit 3290e7a7a735bb5b633b0c346ec4200ce9dd00d5
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:14:26 2015 -0500
+
+    finally doing a travis build
+
+commit c02acafd7e81d9c80e77d189d37e3d93a5633ed3
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:13:30 2015 -0500
+
+    finally doing a travis build
+
+commit e136c291a10b660a49827c73cc64e3b9c1b556a6
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:12:13 2015 -0500
+
+    trying to get travis to recognize push
+
+commit 253b7f46cff5727fb9085841e500626a50a924b6
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:07:42 2015 -0500
+
+    trying to get travis to pass
+
+commit e9bd0cfcf749dc84b0440ecce5f05c0af8c102f8
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:05:16 2015 -0500
+
+    trying to get travis to work
+
+commit 845e11462fd73c78324e58b57f17cd74157b8119
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:54:45 2015 -0500
+
+    trying to get travis to pass still
+
+commit f2ca8f30a1445cdd044831260da5d4d92763a86b
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:43:06 2015 -0500
+
+    trying to get travis to recognize push
+
+commit a48bba56b0824ad733b31fa184099678261f818a
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:38:37 2015 -0500
+
+    adding modified makefile
+
+commit bf2597a70aeb3493f7579f2c93d6648b52395c5a
+Author: kahlih <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:35:29 2015 -0500
+
+    adding updated makefile
+
+commit 36ceec762b76a74612160f6e5adc5dd4397652a1
+Author: kahlih <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:06:31 2015 -0500
+
+    initial commit

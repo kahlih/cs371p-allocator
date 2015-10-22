@@ -16,6 +16,8 @@
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
 
+using namespace std;
+
 // ---------
 // Allocator
 // ---------
@@ -70,7 +72,19 @@ class Allocator {
          * <your documentation>
          */
         bool valid () const {
-            // <your code>
+	    int sentinal = 0;
+	    while (sentinal < N){
+	    	int begin = a[sentinal];
+		/* If values go Out of Bounds*/
+		if (sentinal + begin + 8 > N){ 
+			return false; }
+		
+		int end = a[sentinal+begin+4];
+		if (begin != end) { 
+			return false; }
+		
+		sentinal += (begin + 8);
+	    }
             return true;}
 
         /**
@@ -95,10 +109,10 @@ class Allocator {
          * set up array will sentinals
 	 */
         Allocator () {
-            //(*this)[0] = 0; // replace!
-            int v = (sizeof(a))-4-4; //two sentinals
+            if (N < sizeof(T) + 8){throw std::bad_alloc();}
+	    int v = (sizeof(a))-4-4; //two sentinals
 	    (*this)[0] = v;
-	    (*this)[(sizeof(a)/sizeof(T))-1] = v;
+	    (*this)[N-4] = v;
             assert(valid());}
 
         // Default copy, destructor, and copy assignment

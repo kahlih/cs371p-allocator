@@ -82,10 +82,10 @@ TestAllocator.tmp: TestAllocator
 	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestAllocator.tmp
 	cat TestAllocator.tmp
 
-TestAllocator.out: TestVoting
+TestAllocator.out: TestAllocator
 	$(VALGRIND) ./TestAllocator                                       >  TestAllocator.out 2>&1
-	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestVoting.out
-	cat TestVoting.out
+	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestAllocator.out
+	cat TestAllocator.out
 
 allocator-tests/%: %
 	@cp $^ $@
