@@ -291,8 +291,7 @@ class Allocator {
                     *lhsPointer = 0;  //zeroed inner sentinels
                     *lhsAdjSent = 0;  //zeroed inner Sentinels
 
-                    char* rightJumpPointer = leftJumpPointer + *leftJumpPointer + 4;
-                         *rightJumpPointer = *leftJumpPointer; //converted rightmost sentinel to new value
+                        *rhsPointer = *leftJumpPointer; //converted rightmost sentinel to new value
                          lhsPointer = leftJumpPointer; //new lhsSentinel
                 }
 
