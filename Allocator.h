@@ -90,10 +90,10 @@ class Allocator {
         			return false; }
 
                 //sign check
-                if(signbit(a[sentinel]) != signbit(a[sentinel+begin+4])) {
-                    cout << "Failed in checking if sentinel signs are equal" <<endl;
-                    cout << "begin: " << begin << "  and end: " << end << endl;
-                    return false;}    
+                // if(signbit(a[sentinel]) != signbit(a[sentinel+begin+4])) {
+                //     cout << "Failed in checking if sentinel signs are equal" <<endl;
+                //     cout << "begin: " << begin << "  and end: " << end << endl;
+                //     return false;}    
 
                 //check for adjacent free blocks
                 //take current sentinel and check behind
@@ -161,8 +161,13 @@ class Allocator {
             int chunk = n*(sizeof(T));
     	    int begin = a[sentinel];
             /* If able to allocate space */
-    	    if ((begin > 0)){
-                if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
+            if ((begin > 0)){
+                if(begin == (chunk+8)){ //can
+                    a[sentinel] = -begin;
+                    a[sentinel+begin+4] = -begin;
+                    return reinterpret_cast<pointer>(a+sentinel+4);   
+                }
+                else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
 
                     int newBoundary = begin-chunk-8;
 
@@ -176,11 +181,7 @@ class Allocator {
                     a[sentinel+begin+4] = -begin;
                     return reinterpret_cast<pointer>(a+sentinel+4);
                 }
-                // else if(begin == (chunk+8)){ //can
-                //     a[sentinel] = -begin;
-                //     a[sentinel+begin+4] = -begin;
-                //     return reinterpret_cast<pointer>(a+sentinel+4);   
-                // }
+
     	    }
             assert(valid());
             return nullptr;}             // replace!
