@@ -15,6 +15,7 @@
 #include <cstddef>   // ptrdiff_t, size_t
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
+#include <stdlib.h>     /* abs */
 
 using namespace std;
 
@@ -72,19 +73,22 @@ class Allocator {
          * <your documentation>
          */
         bool valid () const {
-	    int sentinal = 0;
-	    while (sentinal < N){
-	    	int begin = a[sentinal];
-		/* If values go Out of Bounds*/
-		if (sentinal + begin + 8 > N){ 
-			return false; }
-		
-		int end = a[sentinal+begin+4];
-		if (begin != end) { 
-			return false; }
-		
-		sentinal += (begin + 8);
-	    }
+    	    int sentinal = 0;
+    	    while (sentinal < N){
+        	    int begin = abs(a[sentinal]);
+        		/* If values go Out of Bounds*/
+        		if (sentinal + begin + 8 > N){
+                    cout << "Failed in out of bounds case" << endl;
+        			return false; }
+        		
+        		int end = abs(a[sentinal+begin+4]);
+        		if (begin != end) { 
+                    cout << "Failed in checking if sentinals are equal" << endl;
+                    cout << "begin: " << begin << "  and end: " << end << endl;
+        			return false; }
+        		
+        		sentinal += (begin + 8);
+    	    }
             return true;}
 
         /**
@@ -110,9 +114,9 @@ class Allocator {
 	 */
         Allocator () {
             if (N < sizeof(T) + 8){throw std::bad_alloc();}
-	    int v = (sizeof(a))-4-4; //two sentinals
-	    (*this)[0] = v;
-	    (*this)[N-4] = v;
+            int v = (sizeof(a))-4-4; //two sentinals
+            (*this)[0] = v;
+            (*this)[N-4] = v;
             assert(valid());}
 
         // Default copy, destructor, and copy assignment
@@ -133,7 +137,18 @@ class Allocator {
          * throw a bad_alloc exception, if n is invalid
          */
         pointer allocate (size_type n) {
-            // <your code>
+    	    int sentinal = 0;
+            int chunk = n*(sizeof(T));
+    	    int begin = a[sentinal];
+    	    /* If able to allocate space */
+    	    if ((begin > 0)){
+                if (begin >= (chunk+8+sizeof(T))){
+            		a[sentinal] = -chunk;
+            		a[sentinal+chunk+4] = -chunk;
+            		a[sentinal+chunk+8] = begin-chunk-8;
+            		a[sentinal+begin+4] = begin-chunk-8;
+                    return reinterpret_cast<pointer>(a+sentinal+4);}
+    	    }
             assert(valid());
             return nullptr;}             // replace!
 
