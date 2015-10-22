@@ -295,6 +295,20 @@ class Allocator {
                          lhsPointer = leftJumpPointer; //new lhsSentinel
                 }
 
+                char* rhsAdjSent = rhsPointer + sizeof(int);
+
+                if(*rhsAdjSent > 0){
+                    int chunkRight = *rhsAdjSent + rhsSentinel;
+                    char* rightJumpPointer = rhsAdjSent + (*rhsAdjSent + sizeof(int));
+                    *rightJumpPointer = chunkRight + 8;
+
+                    *rhsPointer = 0;
+                    *rhsAdjSent = 0;
+
+                    *lhsPointer = *rightJumpPointer;
+                     rhsPointer = rightJumpPointer;
+                }
+
 
 
 
