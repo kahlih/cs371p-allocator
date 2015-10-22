@@ -96,6 +96,48 @@ TEST(TestAllocator2, index) {
     Allocator<int, 100> x;
     ASSERT_EQ(x[0], 92);}
 
+
+/**
+*   Test the default constructor
+*/
+
+TEST(TestAllocator2, exceptionAlloc) {
+    try{
+        const Allocator<int, 8> x;
+        ASSERT_EQ(1,0);
+    }
+    catch(std::bad_alloc& exception) {
+    }
+}
+
+/**
+*   Test Multiple Allocations
+*/
+
+
+TEST(TestAllocator2, multipleAlloc) {
+    Allocator<double, 100> x;
+    double* p   = x.allocate(2);
+    double* p2  = x.allocate(3);
+    
+    ASSERT_EQ(x[0], -16);
+    ASSERT_EQ(x[24], -24);
+    ASSERT_EQ(x[56], 36);
+
+    double* p_end = p+2;
+
+    while (p!=p_end){
+        x.construct(p,5);
+        ++p;
+    }
+
+}
+
+
+
+
+
+
 // --------------
 // TestAllocator3
 // --------------

@@ -76,6 +76,7 @@ class Allocator {
         bool valid () const {
     	    int sentinel = 0;
     	    while (sentinel < N){
+
         	    int begin = abs(a[sentinel]);
         		/* If values go Out of Bounds*/
         		if (sentinel + begin + 8 > N){
@@ -119,6 +120,7 @@ class Allocator {
          * https://code.google.com/p/googletest/wiki/AdvancedGuide#Private_Class_Members
          */
         FRIEND_TEST(TestAllocator2, index);
+        FRIEND_TEST(TestAllocator2, multipleAlloc);
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}
 
@@ -159,11 +161,15 @@ class Allocator {
          */
         pointer allocate (size_type n) {
     	    int sentinel = 0;
+
             int chunk = n*(sizeof(T));
-    	    int begin = a[sentinel];
             while(sentinel < N){
+
+                int begin = a[sentinel];
+
                 /* If able to allocate space */
                 if ((begin > 0)){
+
                     if(begin == (chunk+8)){ //can
                         a[sentinel] = -begin;
                         a[sentinel+begin+4] = -begin;
@@ -172,13 +178,12 @@ class Allocator {
                     else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
 
                         int newBoundary = begin-chunk-8;
-
-                		a[sentinel] = -chunk;
-                		a[sentinel+chunk+4] = -chunk;
-
-                		a[sentinel+chunk+8] = newBoundary;
-                		a[sentinel+begin+4] = newBoundary;
-                        return reinterpret_cast<pointer>(a+sentinel+4);}
+                		(*this)[sentinel] = -chunk;
+                		(*this)[sentinel+chunk+4] = -chunk;
+                		(*this)[sentinel+chunk+8] = newBoundary;
+                		(*this)[sentinel+begin+4] = newBoundary;
+                        return reinterpret_cast<pointer>(a+sentinel+4);
+                    }
                     else if((begin > (chunk+8)) && begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
                         a[sentinel+begin+4] = -begin;
                         return reinterpret_cast<pointer>(a+sentinel+4);
@@ -193,7 +198,7 @@ class Allocator {
                 /* Negative value => Allocated Space; jump to next free space*/
                 else{
                     int jump = abs(begin) + 8;
-                    sentinel += jump;
+                    sentinel += (jump);
                 }
             }
             assert(valid());
@@ -243,7 +248,12 @@ class Allocator {
          * O(1) in time
          * <your documentation>
          */
+
+        // int& operator [] (int i) {
+        //     return *reinterpret_cast<int*>(&a[i]);}
+
         const int& operator [] (int i) const {
             return *reinterpret_cast<const int*>(&a[i]);}};
+
 
 #endif // Allocator_h
