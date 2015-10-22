@@ -73,21 +73,21 @@ class Allocator {
          * <your documentation>
          */
         bool valid () const {
-    	    int sentinal = 0;
-    	    while (sentinal < N){
-        	    int begin = abs(a[sentinal]);
+    	    int sentinel = 0;
+    	    while (sentinel < N){
+        	    int begin = abs(a[sentinel]);
         		/* If values go Out of Bounds*/
-        		if (sentinal + begin + 8 > N){
+        		if (sentinel + begin + 8 > N){
                     cout << "Failed in out of bounds case" << endl;
         			return false; }
         		
-        		int end = abs(a[sentinal+begin+4]);
+        		int end = abs(a[sentinel+begin+4]);
         		if (begin != end) { 
                     cout << "Failed in checking if sentinals are equal" << endl;
                     cout << "begin: " << begin << "  and end: " << end << endl;
         			return false; }
         		
-        		sentinal += (begin + 8);
+        		sentinel += (begin + 8);
     	    }
             return true;}
 
@@ -137,25 +137,30 @@ class Allocator {
          * throw a bad_alloc exception, if n is invalid
          */
         pointer allocate (size_type n) {
-    	    int sentinal = 0;
+    	    int sentinel = 0;
             int chunk = n*(sizeof(T));
-    	    int begin = a[sentinal];
+    	    int begin = a[sentinel];
             /* If able to allocate space */
     	    if ((begin > 0)){
-                if (begin >= (chunk+8+sizeof(T))){
+                if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
 
                     int newBoundary = begin-chunk-8;
 
-            		a[sentinal] = -chunk;
-            		a[sentinal+chunk+4] = -chunk;
+            		a[sentinel] = -chunk;
+            		a[sentinel+chunk+4] = -chunk;
 
-            		a[sentinal+chunk+8] = newBoundary;
-            		a[sentinal+begin+4] = newBoundary;
-                    return reinterpret_cast<pointer>(a+sentinal+4);}
-                else if(begin < (chunk+8+sizeof(T))){
-                    a[sentinal] = -begin;
-                    a[sentinal+begin+4] = -begin;
+            		a[sentinel+chunk+8] = newBoundary;
+            		a[sentinel+begin+4] = newBoundary;
+                    return reinterpret_cast<pointer>(a+sentinel+4);}
+                else if(begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
+                    a[sentinel+begin+4] = -begin;
+                    return reinterpret_cast<pointer>(a+sentinel+4);
                 }
+                // else if(begin == (chunk+8)){ //can
+                //     a[sentinel] = -begin;
+                //     a[sentinel+begin+4] = -begin;
+                //     return reinterpret_cast<pointer>(a+sentinel+4);   
+                // }
     	    }
             assert(valid());
             return nullptr;}             // replace!
