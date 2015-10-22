@@ -120,8 +120,13 @@ class Allocator {
          * https://code.google.com/p/googletest/wiki/AdvancedGuide#Private_Class_Members
          */
         FRIEND_TEST(TestAllocator2, index);
-        FRIEND_TEST(TestCustom, multipleAlloc);
-        FRIEND_TEST(TestCustom, properAlloc);
+        FRIEND_TEST(TestCustomAllocate, multipleAlloc);
+        FRIEND_TEST(TestCustomAllocate, properAlloc);
+        FRIEND_TEST(TestCustomValid, valid_1);
+        FRIEND_TEST(TestCustomAllocate, oddTypeAlloc);
+        FRIEND_TEST(TestCustomValid, valid_2);
+        FRIEND_TEST(TestCustomValid, valid_3);
+        FRIEND_TEST(TestCustomValid, valid_4);
 
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}

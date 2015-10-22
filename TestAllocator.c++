@@ -15,6 +15,19 @@
 
 #include "Allocator.h"
 
+// Custom class to test types with
+class Elephant{
+    public:
+        string name;
+        Elephant(string s){
+            name = s;
+        }
+        bool operator==(const Elephant& rhs){
+            return this->name == rhs.name;
+        }
+};
+
+
 // --------------
 // TestAllocator1
 // --------------
@@ -164,16 +177,81 @@ TYPED_TEST(TestAllocator3, test_10) {
             x.destroy(e);}
         x.deallocate(b, s);}}
 
+
 // --------------
-// TestCustom
+// TestCustomValid
 // --------------
 
+/* Verify valid() can catch false/incorrect values and allocations*/
+TEST(TestCustomValid, valid_1){
+    Allocator<char, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = -4;
+    x[8] = -4;
+    x[12] = 600;
+    x[96] = 600;
+    ASSERT_FALSE(x.valid());
+}
+
+/* Verify validity after changes */
+TEST(TestCustomValid, valid_2){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = -16;
+    x[20] = -16;
+    x[24] = 8;
+    x[36] = 8;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+    ASSERT_TRUE(x.valid());
+
+    x[0] = 32;
+    x[36] = 32;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+
+    ASSERT_TRUE(x.valid());
+
+}
+
+/* Catch two adjacent free chunks and return false */
+TEST(TestCustomValid, valid_3){
+    Allocator<int, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = 4;
+    x[8] = 4;
+    x[12] = 80;
+    x[96] = 80;
+    ASSERT_FALSE(x.valid());
+}
+
+/* Catch invalid array where sentinals do not match */
+TEST(TestCustomValid, valid_4){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = 92;
+    x[96] = 56;
+    ASSERT_FALSE(x.valid());
+}
+
+
+// --------------
+// TestCustomAllocate
+// --------------
 
 /**
 *   Test the default constructor if not initialized properly
 */
 
-TEST(TestCustom, exceptionAlloc) {
+TEST(TestCustomAllocate, exceptionAlloc) {
     try{
         const Allocator<int, 8> x;
         ASSERT_EQ(1,0);
@@ -187,7 +265,7 @@ TEST(TestCustom, exceptionAlloc) {
 *   Test Multiple Allocations
 */
 
-TEST(TestCustom, multipleAlloc) {
+TEST(TestCustomAllocate, multipleAlloc) {
     Allocator<double, 100> x;
     double* p   = x.allocate(2);
     double* p2  = x.allocate(3);
@@ -216,7 +294,7 @@ TEST(TestCustom, multipleAlloc) {
 *   Test Proper Allocation (skips to appropriate place)
 */
 
-TEST(TestCustom, properAlloc){
+TEST(TestCustomAllocate, properAlloc){
     Allocator<double, 100> x;
 
     // Hard code values in to test allocation functionality
@@ -228,11 +306,16 @@ TEST(TestCustom, properAlloc){
     x[52] = -8;
     x[56] = 36;
     x[96] = 36;
-    ASSERT_TRUE(x.valid());
 
     x.allocate(2);
     ASSERT_EQ(x[56],-16);
     ASSERT_EQ(x[80],12);
 }
 
-
+TEST(TestCustomAllocate, oddTypeAlloc){
+    Allocator<Elephant, 100> e;
+    Elephant v("Dumbo");
+    Elephant* p = e.allocate(1);
+    e.construct(p,v);
+    ASSERT_EQ(e[0], -(sizeof(Elephant)));
+}
