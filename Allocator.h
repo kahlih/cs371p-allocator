@@ -80,14 +80,14 @@ class Allocator {
         	    int begin = abs(a[sentinel]);
         		/* If values go Out of Bounds*/
         		if (sentinel + begin + 8 > N){
-                    cout << "Failed in out of bounds case" << endl;
+                    // cout << "Failed in out of bounds case" << endl;
         			return false; }
         		
                 //absolute value check
         		int end = abs(a[sentinel+begin+4]);
         		if (begin != end) { 
-                    cout << "Failed in checking if sentinels are equal" << endl;
-                    cout << "begin: " << begin << "  and end: " << end << endl;
+                    // cout << "Failed in checking if sentinels are equal" << endl;
+                    // cout << "begin: " << begin << "  and end: " << end << endl;
         			return false; }
 
                 //sign check
@@ -100,7 +100,7 @@ class Allocator {
                 //take current sentinel and check behind
                 if(sentinel-4 > 0 && sentinel > 0) {
                     if((a[sentinel] > 0) && (a[sentinel-4] > 0)) { //check sentinel behind
-                        cout << "Failed: Two free blocks side by side" << endl;
+                        // cout << "Failed: Two free blocks side by side" << endl;
                         return false;
                     }
                 }
@@ -185,10 +185,26 @@ class Allocator {
                     else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
 
                         int newBoundary = begin-chunk-8;
-                		(*this)[sentinel] = -chunk;
-                		(*this)[sentinel+chunk+4] = -chunk;
+                        int sentinelLHS = sentinel;
+                        int sentinelRHS = sentinel+chunk+4;
+
+                        // cout << "sentinelLHS position: " << sentinelLHS << endl;
+                        // cout << "sentinelRHS position: " << sentinelRHS << endl;
+
+
+                		(*this)[sentinelLHS] = -chunk;
+                		(*this)[sentinelRHS] = -chunk;
+
+
+                        // cout << "sentinelLHS value: " << (*this)[sentinelLHS]  << endl;
+                        // cout << "sentinelRHS value: " << (*this)[sentinelRHS] << endl;
+
+
+
                 		(*this)[sentinel+chunk+8] = newBoundary;
                 		(*this)[sentinel+begin+4] = newBoundary;
+
+
                         return reinterpret_cast<pointer>(a+sentinel+4);
                     }
                     else if((begin > (chunk+8)) && begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
@@ -234,8 +250,56 @@ class Allocator {
          * throw an invalid_argument exception, if p is invalid
          * <your documentation>
          */
-        void deallocate (pointer p, size_type) {
+        void deallocate (pointer p, size_type n) {
             // <your code>
+
+            /*
+                number of blocks to free is n
+                point to right after sentinel is p
+            */
+
+                // //debug to show Sentinels prior to being freed
+                // cout<<"Sentinel1: "<< *(p-1) << endl << endl;
+                // cout<<"Sentinel2: "<< *(p+(1*n)) << endl << endl;
+                char* convertedPoint = reinterpret_cast<char*>(p);
+
+            //go to LHS sentinel and make it positive
+
+                char* lhsPointer = convertedPoint-1*sizeof(int);
+                int lhsSentinel = *(lhsPointer);
+                    lhsSentinel = abs(lhsSentinel);
+            //go to RHS sentinel and make it positive
+                char* rhsPointer = convertedPoint + lhsSentinel;
+                int rhsSentinel = *(rhsPointer);
+                    rhsSentinel = abs(rhsSentinel);
+
+                //debug check to show that Sentinels are freed
+                // cout<<"flippedSentinel1: "<< lhsSentinel << endl;
+                // cout<<"flippedSentinel2: "<< rhsSentinel << endl << endl;
+
+
+                /*
+                    conditional will check if the adjacent sentinel to lhsSentinel is free
+                */
+                char* lhsAdjSent = lhsPointer - sizeof(int);
+
+                if(*lhsAdjSent > 0) {
+                    int chunkLeft = *lhsAdjSent+lhsSentinel;
+                    char* leftJumpPointer = lhsAdjSent -(*lhsAdjSent - sizeof(int));
+                    *leftJumpPointer = chunkLeft + 8; //to account for the inner sentinels
+
+                    *lhsPointer = 0;  //zeroed inner sentinels
+                    *lhsAdjSent = 0;  //zeroed inner Sentinels
+
+                    char* rightJumpPointer = leftJumpPointer + *leftJumpPointer + 4;
+                         *rightJumpPointer = *leftJumpPointer; //converted rightmost sentinel to new value
+                         lhsPointer = leftJumpPointer; //new lhsSentinel
+                }
+
+
+
+
+
             assert(valid());}
 
         // -------

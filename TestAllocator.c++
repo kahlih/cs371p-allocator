@@ -109,7 +109,6 @@ TEST(TestAllocator2, index) {
     Allocator<int, 100> x;
     ASSERT_EQ(x[0], 92);}
 
-
 // --------------
 // TestAllocator3
 // --------------
@@ -147,6 +146,7 @@ TYPED_TEST(TestAllocator3, test_1) {
         ASSERT_EQ(v, *p);
         x.destroy(p);
         x.deallocate(p, s);}}
+
 
 TYPED_TEST(TestAllocator3, test_10) {
     typedef typename TestFixture::allocator_type allocator_type;
