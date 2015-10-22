@@ -15,7 +15,8 @@
 #include <cstddef>   // ptrdiff_t, size_t
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
-#include <stdlib.h>     /* abs */
+#include <stdlib.h>  /* abs */
+#include <cmath>     /* signbit */
 
 using namespace std;
 
@@ -81,12 +82,31 @@ class Allocator {
                     cout << "Failed in out of bounds case" << endl;
         			return false; }
         		
+                //absolute value check
         		int end = abs(a[sentinel+begin+4]);
         		if (begin != end) { 
-                    cout << "Failed in checking if sentinals are equal" << endl;
+                    cout << "Failed in checking if sentinels are equal" << endl;
                     cout << "begin: " << begin << "  and end: " << end << endl;
         			return false; }
+
+                //sign check
+                if(signbit(a[sentinel]) != signbit(a[sentinel+begin+4])) {
+                    cout << "Failed in checking if sentinel signs are equal" <<endl;
+                    cout << "begin: " << begin << "  and end: " << end << endl;
+                    return false;}    
+
+                //check for adjacent free blocks
+                //take current sentinel and check behind
+                if(sentinel>begin) {
+                    if(signbit(a[sentinel]) && signbit(a[sentinel-4])) { //check sentinel behind
+                        return false;
+                    }
+                }
+
+
         		
+
+
         		sentinel += (begin + 8);
     	    }
             return true;}
