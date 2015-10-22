@@ -152,6 +152,10 @@ class Allocator {
             		a[sentinal+chunk+8] = newBoundary;
             		a[sentinal+begin+4] = newBoundary;
                     return reinterpret_cast<pointer>(a+sentinal+4);}
+                else if(begin < (chunk+8+sizeof(T))){
+                    a[sentinal] = -begin;
+                    a[sentinal+begin+4] = -begin;
+                }
     	    }
             assert(valid());
             return nullptr;}             // replace!
