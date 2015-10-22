@@ -160,29 +160,36 @@ class Allocator {
     	    int sentinel = 0;
             int chunk = n*(sizeof(T));
     	    int begin = a[sentinel];
-            /* If able to allocate space */
-            if ((begin > 0)){
-                if(begin == (chunk+8)){ //can
-                    a[sentinel] = -begin;
-                    a[sentinel+begin+4] = -begin;
-                    return reinterpret_cast<pointer>(a+sentinel+4);   
+            while(sentinel < N){
+                /* If able to allocate space */
+                if ((begin > 0)){
+                    if(begin == (chunk+8)){ //can
+                        a[sentinel] = -begin;
+                        a[sentinel+begin+4] = -begin;
+                        return reinterpret_cast<pointer>(a+sentinel+4);   
+                    }
+                    else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
+
+                        int newBoundary = begin-chunk-8;
+
+                		a[sentinel] = -chunk;
+                		a[sentinel+chunk+4] = -chunk;
+
+                		a[sentinel+chunk+8] = newBoundary;
+                		a[sentinel+begin+4] = newBoundary;
+                        return reinterpret_cast<pointer>(a+sentinel+4);}
+                    else if((begin > (chunk+8)) && begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
+                        a[sentinel+begin+4] = -begin;
+                        return reinterpret_cast<pointer>(a+sentinel+4);
+                    }
+
+        	    }
+                /* Negative value => Allocated Space; jump to next free space*/
+                else{
+                    int jump = abs(begin) + 8;
+                    sentinel += jump;
                 }
-                else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
-
-                    int newBoundary = begin-chunk-8;
-
-            		a[sentinel] = -chunk;
-            		a[sentinel+chunk+4] = -chunk;
-
-            		a[sentinel+chunk+8] = newBoundary;
-            		a[sentinel+begin+4] = newBoundary;
-                    return reinterpret_cast<pointer>(a+sentinel+4);}
-                else if(begin < (chunk+8+sizeof(T))){ // able to allocate, small amount left over
-                    a[sentinel+begin+4] = -begin;
-                    return reinterpret_cast<pointer>(a+sentinel+4);
-                }
-
-    	    }
+            }
             assert(valid());
             return nullptr;}             // replace!
 
