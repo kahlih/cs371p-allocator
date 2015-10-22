@@ -97,47 +97,6 @@ TEST(TestAllocator2, index) {
     ASSERT_EQ(x[0], 92);}
 
 
-/**
-*   Test the default constructor
-*/
-
-TEST(TestAllocator2, exceptionAlloc) {
-    try{
-        const Allocator<int, 8> x;
-        ASSERT_EQ(1,0);
-    }
-    catch(std::bad_alloc& exception) {
-    }
-}
-
-/**
-*   Test Multiple Allocations
-*/
-
-
-TEST(TestAllocator2, multipleAlloc) {
-    Allocator<double, 100> x;
-    double* p   = x.allocate(2);
-    double* p2  = x.allocate(3);
-    
-    ASSERT_EQ(x[0], -16);
-    ASSERT_EQ(x[24], -24);
-    ASSERT_EQ(x[56], 36);
-
-    double* p_end = p+2;
-
-    while (p!=p_end){
-        x.construct(p,5);
-        ++p;
-    }
-
-}
-
-
-
-
-
-
 // --------------
 // TestAllocator3
 // --------------
@@ -204,3 +163,76 @@ TYPED_TEST(TestAllocator3, test_10) {
             --e;
             x.destroy(e);}
         x.deallocate(b, s);}}
+
+// --------------
+// TestCustom
+// --------------
+
+
+/**
+*   Test the default constructor if not initialized properly
+*/
+
+TEST(TestCustom, exceptionAlloc) {
+    try{
+        const Allocator<int, 8> x;
+        ASSERT_EQ(1,0);
+    }
+    catch(std::bad_alloc& exception) {
+        SUCCEED();
+    }
+}
+
+/**
+*   Test Multiple Allocations
+*/
+
+TEST(TestCustom, multipleAlloc) {
+    Allocator<double, 100> x;
+    double* p   = x.allocate(2);
+    double* p2  = x.allocate(3);
+
+
+    ASSERT_EQ(x[0], -16);
+    ASSERT_EQ(x[24], -24);
+    ASSERT_EQ(x[56], 36);
+
+    double* p_end = p+2;
+    double* p2_end = p2+3;
+
+    while (p!=p_end){
+        x.construct(p,5);
+        ++p;
+    }
+    while (p2!=p2_end){
+        x.construct(p2,5);
+        ++p2;
+    }
+
+    ASSERT_EQ(x[4],x[28]);
+}
+
+/**
+*   Test Proper Allocation (skips to appropriate place)
+*/
+
+TEST(TestCustom, properAlloc){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test allocation functionality
+    x[0] = -16;
+    x[20] = -16;
+    x[24] = 8;
+    x[36] = 8;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+    ASSERT_TRUE(x.valid());
+
+    x.allocate(2);
+    ASSERT_EQ(x[56],-16);
+    ASSERT_EQ(x[80],12);
+}
+
+
