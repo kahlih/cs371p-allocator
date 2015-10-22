@@ -40,10 +40,8 @@ clean:
 	rm -f *.gcda
 	rm -f *.gcno
 	rm -f *.gcov
-	rm -f RunVoting
-	rm -f RunVoting.tmp
-	rm -f TestVoting
-	rm -f TestVoting.tmp
+	rm -f TestAllocator
+	rm -f TestAllocator.tmp
 
 config:
 	git config -l
