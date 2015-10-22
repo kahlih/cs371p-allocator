@@ -92,10 +92,13 @@ class Allocator {
          * O(1) in space
          * O(1) in time
          * throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
-         */
+         * set up array will sentinals
+	 */
         Allocator () {
-            (*this)[0] = 0; // replace!
-            // <your code>
+            //(*this)[0] = 0; // replace!
+            int v = (sizeof(a))-4-4; //two sentinals
+	    (*this)[0] = v;
+	    (*this)[(sizeof(a)/sizeof(T))-1] = v;
             assert(valid());}
 
         // Default copy, destructor, and copy assignment
