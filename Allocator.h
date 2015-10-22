@@ -125,7 +125,7 @@ class Allocator {
         // Allocator& operator = (const Allocator&);
 
         // --------
-        // allocate
+        // allocate test
         // --------
 
         /**
@@ -140,13 +140,17 @@ class Allocator {
     	    int sentinal = 0;
             int chunk = n*(sizeof(T));
     	    int begin = a[sentinal];
-    	    /* If able to allocate space */
+            /* If able to allocate space */
     	    if ((begin > 0)){
                 if (begin >= (chunk+8+sizeof(T))){
+
+                    int newBoundary = begin-chunk-8;
+
             		a[sentinal] = -chunk;
             		a[sentinal+chunk+4] = -chunk;
-            		a[sentinal+chunk+8] = begin-chunk-8;
-            		a[sentinal+begin+4] = begin-chunk-8;
+
+            		a[sentinal+chunk+8] = newBoundary;
+            		a[sentinal+begin+4] = newBoundary;
                     return reinterpret_cast<pointer>(a+sentinal+4);}
     	    }
             assert(valid());
