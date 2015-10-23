@@ -15,6 +15,19 @@
 
 #include "Allocator.h"
 
+// Custom class to test types with
+class Elephant{
+    public:
+        string name;
+        Elephant(string s){
+            name = s;
+        }
+        bool operator==(const Elephant& rhs){
+            return this->name == rhs.name;
+        }
+};
+
+
 // --------------
 // TestAllocator1
 // --------------
@@ -90,11 +103,11 @@ TYPED_TEST(TestAllocator1, test_10) {
 
 TEST(TestAllocator2, const_index) {
     const Allocator<int, 100> x;
-    ASSERT_EQ(x[0], 0);}
+    ASSERT_EQ(x[0], 92);}
 
 TEST(TestAllocator2, index) {
     Allocator<int, 100> x;
-    ASSERT_EQ(x[0], 0);}
+    ASSERT_EQ(x[0], 92);}
 
 // --------------
 // TestAllocator3
@@ -134,6 +147,7 @@ TYPED_TEST(TestAllocator3, test_1) {
         x.destroy(p);
         x.deallocate(p, s);}}
 
+
 TYPED_TEST(TestAllocator3, test_10) {
     typedef typename TestFixture::allocator_type allocator_type;
     typedef typename TestFixture::value_type     value_type;
@@ -162,3 +176,203 @@ TYPED_TEST(TestAllocator3, test_10) {
             --e;
             x.destroy(e);}
         x.deallocate(b, s);}}
+
+
+// --------------
+// TestCustomValid
+// --------------
+
+/* Verify valid() can catch false/incorrect values and allocations*/
+TEST(TestCustomValid, valid_1){
+    Allocator<char, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = -4;
+    x[8] = -4;
+    x[12] = 600;
+    x[96] = 600;
+    ASSERT_FALSE(x.valid());
+}
+
+/* Verify validity after changes */
+TEST(TestCustomValid, valid_2){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = -16;
+    x[20] = -16;
+    x[24] = 8;
+    x[36] = 8;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+    ASSERT_TRUE(x.valid());
+
+    x[0] = 32;
+    x[36] = 32;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+
+    ASSERT_TRUE(x.valid());
+
+}
+
+/* Catch two adjacent free chunks and return false */
+TEST(TestCustomValid, valid_3){
+    Allocator<int, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = 4;
+    x[8] = 4;
+    x[12] = 80;
+    x[96] = 80;
+    ASSERT_FALSE(x.valid());
+}
+
+/* Catch invalid array where sentinals do not match */
+TEST(TestCustomValid, valid_4){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test functionality
+    x[0] = 92;
+    x[96] = 56;
+    ASSERT_FALSE(x.valid());
+}
+
+
+// --------------
+// TestCustomAllocate
+// --------------
+
+/**
+*   Test the default constructor if not initialized properly
+*/
+
+TEST(TestCustomAllocate, exceptionAlloc) {
+    try{
+        const Allocator<int, 8> x;
+        ASSERT_EQ(1,0);
+    }
+    catch(std::bad_alloc& exception) {
+        SUCCEED();
+    }
+}
+
+/**
+*   Test Multiple Allocations
+*/
+
+TEST(TestCustomAllocate, multipleAlloc) {
+    Allocator<double, 100> x;
+    double* p   = x.allocate(2);
+    double* p2  = x.allocate(3);
+
+
+    ASSERT_EQ(x[0], -16);
+    ASSERT_EQ(x[24], -24);
+    ASSERT_EQ(x[56], 36);
+
+    double* p_end = p+2;
+    double* p2_end = p2+3;
+
+    while (p!=p_end){
+        x.construct(p,5);
+        ++p;
+    }
+    while (p2!=p2_end){
+        x.construct(p2,5);
+        ++p2;
+    }
+
+    ASSERT_EQ(x[4],x[28]);
+}
+
+/**
+*   Test Proper Allocation (skips to appropriate place)
+*/
+
+TEST(TestCustomAllocate, properAlloc){
+    Allocator<double, 100> x;
+
+    // Hard code values in to test allocation functionality
+    x[0] = -16;
+    x[20] = -16;
+    x[24] = 8;
+    x[36] = 8;
+    x[40] = -8;
+    x[52] = -8;
+    x[56] = 36;
+    x[96] = 36;
+
+    x.allocate(2);
+    ASSERT_EQ(x[56],-16);
+    ASSERT_EQ(x[80],12);
+}
+
+TEST(TestCustomAllocate, oddTypeAlloc){
+    Allocator<Elephant, 100> e;
+    Elephant v("Dumbo");
+    Elephant* p = e.allocate(1);
+    e.construct(p,v);
+    ASSERT_EQ(e[0], -(sizeof(Elephant)));
+}
+
+
+// TEST(TestCustomDeallocate, simpleDealloc){
+//     Allocator<int,16> x;
+//     int* p = x.allocate(2);
+//     ASSERT_EQ(x[0],-8);
+//     x.deallocate(p,2);
+//     ASSERT_EQ(x[0], 8);
+// }
+
+
+// TEST(TestCustomDeallocate, coalesceLeftDealloc){
+//     Allocator<int,44> x;
+//     x[0] = 4;
+//     x[8] = 4;
+//     x[12] = -8;
+//     x[24] = -8;
+//     x[28] = -8;
+//     x[40] = -8;
+//     ASSERT_EQ(x[0],4);
+//     x.deallocate(&x[16],2);
+//     ASSERT_EQ(x[0], 20);
+// }
+
+
+TEST(TestCustomDeallocate, Dealloc_1){
+    Allocator<int,44> x;
+    x[0] = 4;
+    x[8] = 4;
+    x[12] = -8;
+    x[24] = -8;
+    x[28] = -8;
+    x[40] = -8;
+    ASSERT_EQ(x[0],4);
+    x.deallocate(&x[16],2);
+    ASSERT_EQ(x[0], 20);
+}
+
+
+TEST(TestCustomDeallocate, Dealloc_2){
+    Allocator<double,32> x;
+    double* p = x.allocate(1);
+    ASSERT_EQ(x[0],-8);
+    x.deallocate(p,1);
+    ASSERT_EQ(x[0], 24);
+}
+
+
+TEST(TestCustomDeallocate, Dealloc_3){
+    Allocator<int, 100> y;
+    y.allocate(1);
+    int* p = y.allocate(3);
+    y.deallocate(p,3);
+}
+
+
+

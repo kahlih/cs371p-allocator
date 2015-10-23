@@ -1,0 +1,205 @@
+commit fdec88e5f13a1549513f42b059ab66852f75726e
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 21:00:49 2015 -0500
+
+    believe i fixed deallocate
+
+commit 65d09f46254e6a0ed146caa4df30b788176dff21
+Merge: 7aa17cf 00fbdfa
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 20:27:22 2015 -0500
+
+    Merge branch 'dev' of github.com:kahlih/cs371p-allocator into dev
+
+commit 7aa17cf56f066a0b52717092f4a0471dfb090d27
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 20:25:02 2015 -0500
+
+    fixing deallocate! partially complete
+
+commit 00fbdfabefcc2372ed228efaada217220c889f4c
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 20:21:57 2015 -0500
+
+    Working on documentation of Valid
+
+commit 499590ca38862badf681a9daf440be26026fe847
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 20:18:14 2015 -0500
+
+    Updating the documentation for Allocator.h
+
+commit f1934466f8f3365a6c84b4883661755022124b08
+Merge: 8d610f1 5d3673d
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 20:11:32 2015 -0500
+
+    Merge branch 'dev' of github.com:kahlih/cs371p-allocator into dev
+
+commit 8d610f1faedbaa68e429f957acd09ab1948dc9b8
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 20:09:40 2015 -0500
+
+    Updating Documentation
+
+commit 5d3673de36f914d28a8f3ea44acdd07b85623d1c
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 19:49:42 2015 -0500
+
+    fixed bug in allocate
+
+commit 5bc36b2d6ce39c99bcc7df6da1a9456ec2893bf1
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 17:58:09 2015 -0500
+
+    deallocation and coalescing
+
+commit 698ba4a57394adeafe7dd7979e4766ebf234c435
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 17:48:52 2015 -0500
+
+    refactored to use points correctly
+
+commit 4be505fbaef68a6e39cc2dd0a4557cff8e0b33be
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 17:46:54 2015 -0500
+
+    deallocation method for coalescing with free lhs block
+
+commit 839c4032a23942db5390cc18174075fa4fa9222c
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 15:15:10 2015 -0500
+
+    added more interesting tests for allocate and valid, now we just need to implement deallocate and test it
+
+commit 1e02550d24032fab12974b843ad66b84fb693564
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 14:33:40 2015 -0500
+
+    added some more interesting test cases
+
+commit a52d8ff180bd8bd607859bd1191a6adcc8ae520c
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 14:07:53 2015 -0500
+
+    added some tests that verify correct allocation
+
+commit f69fa6e457d9a2590e3d350ec37a95c79171af2f
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 12:55:55 2015 -0500
+
+    added small conditional check, now we should start testing
+
+commit 6b7440c7294751f306ed6a8e281afd9cba43f0f5
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 12:41:55 2015 -0500
+
+    updated conditionals and added while loop, closes #6
+
+commit cfc36412c2bc29cbb56101f733555ffd607b65dd
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 12:29:04 2015 -0500
+
+    Updated allocate to handle exact match case
+
+commit dd79b78e26528a8fb35b40c89b249e4db01450f4
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 12:20:59 2015 -0500
+
+    Updated valid to check of adjacent free blocks and equal signs
+
+commit 44877cd807442965446771eeed145105cde04a00
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 11:05:51 2015 -0500
+
+    updated spelling of sentinel, added logic for exact allocation size
+
+commit c1c80107e394c2201cbd2e83f5113ffdf6cbc3d4
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 10:43:01 2015 -0500
+
+    updated to handle edge case conditionals
+
+commit d5db1cc879fe568ef4e96236f9eeba6dc412cbe1
+Author: Emmanuel Pamintuan Jr <EmmanuelPamintuanJr@gmail.com>
+Date:   Thu Oct 22 10:33:05 2015 -0500
+
+    test push
+
+commit 356192f865b6b7881b69431315a388ce7074e355
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Thu Oct 22 10:08:25 2015 -0500
+
+    allocate() returning pointer simple case
+
+commit 1088c27b79d71430a4f659b3fa13ec5208b5c12e
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 23:50:45 2015 -0500
+
+    make a simple valid function that passes current implementation
+
+commit 892c8270c7232e05063c2bb17185bdb6ba12a029
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:33:49 2015 -0500
+
+    got allocator's constructor to properly init sentinals
+
+commit 3290e7a7a735bb5b633b0c346ec4200ce9dd00d5
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:14:26 2015 -0500
+
+    finally doing a travis build
+
+commit c02acafd7e81d9c80e77d189d37e3d93a5633ed3
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:13:30 2015 -0500
+
+    finally doing a travis build
+
+commit e136c291a10b660a49827c73cc64e3b9c1b556a6
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:12:13 2015 -0500
+
+    trying to get travis to recognize push
+
+commit 253b7f46cff5727fb9085841e500626a50a924b6
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:07:42 2015 -0500
+
+    trying to get travis to pass
+
+commit e9bd0cfcf749dc84b0440ecce5f05c0af8c102f8
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 22:05:16 2015 -0500
+
+    trying to get travis to work
+
+commit 845e11462fd73c78324e58b57f17cd74157b8119
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:54:45 2015 -0500
+
+    trying to get travis to pass still
+
+commit f2ca8f30a1445cdd044831260da5d4d92763a86b
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:43:06 2015 -0500
+
+    trying to get travis to recognize push
+
+commit a48bba56b0824ad733b31fa184099678261f818a
+Author: Kahli Holmes <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:38:37 2015 -0500
+
+    adding modified makefile
+
+commit bf2597a70aeb3493f7579f2c93d6648b52395c5a
+Author: kahlih <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:35:29 2015 -0500
+
+    adding updated makefile
+
+commit 36ceec762b76a74612160f6e5adc5dd4397652a1
+Author: kahlih <kahliholmes@utexas.edu>
+Date:   Wed Oct 21 21:06:31 2015 -0500
+
+    initial commit

@@ -10,7 +10,7 @@ FILES :=                              \
 
 CXX        := g++-4.8
 CXXFLAGS   := -pedantic -std=c++11 -Wall
-LDFLAGS    := -lgtest -lgtest_main -pthread
+LDFLAGS    := -lgtest -lgtest_main -pthread  -fno-stack-protector
 GCOV       := gcov-4.8
 GCOVFLAGS  := -fprofile-arcs -ftest-coverage
 GPROF      := gprof
@@ -82,10 +82,10 @@ TestAllocator.tmp: TestAllocator
 	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestAllocator.tmp
 	cat TestAllocator.tmp
 
-TestAllocator.out: TestVoting
+TestAllocator.out: TestAllocator
 	$(VALGRIND) ./TestAllocator                                       >  TestAllocator.out 2>&1
-	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestVoting.out
-	cat TestVoting.out
+	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File 'TestAllocator.c++'" >> TestAllocator.out
+	cat TestAllocator.out
 
 allocator-tests/%: %
 	@cp $^ $@
