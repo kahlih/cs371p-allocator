@@ -344,10 +344,35 @@ TEST(TestCustomAllocate, oddTypeAlloc){
 // }
 
 
-// TEST(TestCustomDeallocate, coalesceLeftDealloc){
-//     Allocator<double,32> x;
-//     double* p = x.allocate(1);
-//     ASSERT_EQ(x[0],-8);
-//     x.deallocate(p,1);
-//     ASSERT_EQ(x[0], 24);
-// }
+TEST(TestCustomDeallocate, Dealloc_1){
+    Allocator<int,44> x;
+    x[0] = 4;
+    x[8] = 4;
+    x[12] = -8;
+    x[24] = -8;
+    x[28] = -8;
+    x[40] = -8;
+    ASSERT_EQ(x[0],4);
+    x.deallocate(&x[16],2);
+    ASSERT_EQ(x[0], 20);
+}
+
+
+TEST(TestCustomDeallocate, Dealloc_2){
+    Allocator<double,32> x;
+    double* p = x.allocate(1);
+    ASSERT_EQ(x[0],-8);
+    x.deallocate(p,1);
+    ASSERT_EQ(x[0], 24);
+}
+
+
+TEST(TestCustomDeallocate, Dealloc_3){
+    Allocator<int, 100> y;
+    y.allocate(1);
+    int* p = y.allocate(3);
+    y.deallocate(p,3);
+}
+
+
+

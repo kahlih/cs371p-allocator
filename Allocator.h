@@ -134,6 +134,9 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_4);
         FRIEND_TEST(TestCustomDeallocate, simpleDealloc);
         FRIEND_TEST(TestCustomDeallocate, coalesceLeftDealloc);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_1);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_2);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_3);
 
 
         int& operator [] (int i) {
@@ -326,21 +329,13 @@ class Allocator {
                 convert(*lhsPointer) = convert(*(rhsAdjSent + convert(*rhsAdjSent) + 4));
                 rhsPointer = (rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4)));
 
-                // char* rightJumpPointer = rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4));
-                // *rightJumpPointer = chunkRight;
-
-                // *rhsPointer = 0;
-                // *rhsAdjSent = 0;
-
-                // *lhsPointer = *rightJumpPointer;
-                //  rhsPointer = rightJumpPointer;
             }
 
 
 
 
 
-        //    assert(valid());
+            //assert(valid());
         }
 
 
