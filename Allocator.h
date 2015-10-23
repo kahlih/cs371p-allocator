@@ -72,7 +72,13 @@ class Allocator {
          * O(1) in space
          * O(n) in time
          * 
-         *  The purpose of valid is to check the current allocation
+         *  The purpose of valid is to check the current allocator and check for invalid
+         *  occurences, returning "False
+         *
+         *  Case of returning false:
+         *  - Values of Sentinels go out of bounds of the allocator
+         *  - Values of Sentinels do not equal each other
+         *  - There are adjacent free blocks
          */
         bool valid () const {
     	    int sentinel = 0;
@@ -116,6 +122,8 @@ class Allocator {
          *
          * https://code.google.com/p/googletest/wiki/AdvancedGuide#Private_Class_Members
          */
+
+
         FRIEND_TEST(TestAllocator2, index);
         FRIEND_TEST(TestCustomAllocate, multipleAlloc);
         FRIEND_TEST(TestCustomAllocate, properAlloc);
