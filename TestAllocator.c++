@@ -321,6 +321,7 @@ TEST(TestCustomAllocate, oddTypeAlloc){
 }
 
 
+<<<<<<< HEAD
 TEST(TestDealloc, deallocate_3)
 {
     Allocator<double, 100> x;
@@ -339,3 +340,12 @@ TEST(TestDealloc, deallocate_3)
     x.deallocate(p3,1);
     ASSERT_EQ(true,x.valid());
 }
+=======
+// TEST(TestCustomDeallocate, simpleDealloc){
+//     Allocator<int,16> x;
+//     int* p = x.allocate(2);
+//     ASSERT_EQ(x[0],-8);
+//     x.deallocate(p,2);
+//     ASSERT_EQ(x[0], 12);
+// }
+>>>>>>> 5d3673de36f914d28a8f3ea44acdd07b85623d1c

@@ -123,7 +123,8 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_2);
         FRIEND_TEST(TestCustomValid, valid_3);
         FRIEND_TEST(TestCustomValid, valid_4);
-        FRIEND_TEST(TestDealloc, deallocate_3);
+        FRIEND_TEST(TestCustomDeallocate, simpleDealloc);
+
 
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}
@@ -174,9 +175,10 @@ class Allocator {
                 /* If able to allocate space */
                 if ((begin > 0)){
 
-                    if(begin == (chunk+8)){ //can
-                        a[sentinel] = -begin;
-                        a[sentinel+begin+4] = -begin;
+                    if(begin == chunk){ //can
+                        cout << "ENTERED" << endl;
+                        (*this)[sentinel] = -begin;
+                        (*this)[sentinel+begin+4] = -begin;
                         return reinterpret_cast<pointer>(a+sentinel+4);   
                     }
                     else if (begin >= (chunk+8+sizeof(T))){ //under the size of freespace with room to allocate one more
@@ -249,17 +251,6 @@ class Allocator {
          */
         void deallocate (pointer p, size_type n) {
             // <your code>
-
-            /*
-                number of blocks to free is n
-                point to right after sentinel is p
-            */
-
-
-
-
-
-
 
             assert(valid());}
 
