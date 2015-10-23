@@ -71,7 +71,14 @@ class Allocator {
         /**
          * O(1) in space
          * O(n) in time
-         * <your documentation>
+         * 
+         *  The purpose of valid is to check the current allocator and check for invalid
+         *  occurences, returning "False
+         *
+         *  Case of returning false:
+         *  - Values of Sentinels go out of bounds of the allocator
+         *  - Values of Sentinels do not equal each other
+         *  - There are adjacent free blocks
          */
         bool valid () const {
     	    int sentinel = 0;
@@ -90,12 +97,6 @@ class Allocator {
                     // cout << "begin: " << begin << "  and end: " << end << endl;
         			return false; }
 
-                //sign check
-                // if(signbit(a[sentinel]) != signbit(a[sentinel+begin+4])) {
-                //     cout << "Failed in checking if sentinel signs are equal" <<endl;
-                //     cout << "begin: " << begin << "  and end: " << end << endl;
-                //     return false;}    
-
                 //check for adjacent free blocks
                 //take current sentinel and check behind
                 if(sentinel-4 > 0 && sentinel > 0) {
@@ -104,11 +105,7 @@ class Allocator {
                         return false;
                     }
                 }
-
-
         		
-
-
         		sentinel += (begin + 8);
     	    }
             return true;}
@@ -116,9 +113,17 @@ class Allocator {
         /**
          * O(1) in space
          * O(1) in time
-         * <your documentation>
+         * Custom Tests were created to demonstrate validity of methods
+         * and also to help the development process.
+         *
+         * The purpose of FRIEND_TEST was to allow the test cases to have access to
+         * to have access to the custom index operator that was implemented by
+         * Professor downing.
+         *
          * https://code.google.com/p/googletest/wiki/AdvancedGuide#Private_Class_Members
          */
+
+
         FRIEND_TEST(TestAllocator2, index);
         FRIEND_TEST(TestCustomAllocate, multipleAlloc);
         FRIEND_TEST(TestCustomAllocate, properAlloc);
@@ -129,6 +134,7 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_4);
         FRIEND_TEST(TestCustomDeallocate, simpleDealloc);
         FRIEND_TEST(TestCustomDeallocate, coalesceLeftDealloc);
+
 
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}
@@ -253,11 +259,22 @@ class Allocator {
          * O(1) in time
          * after deallocation adjacent free blocks must be coalesced
          * throw an invalid_argument exception, if p is invalid
-         * <your documentation>
+         * 
+         *  Deallocation is performed by converting sentinels respective to the current
+         *  pointer passed in to "freed" blocks.
+         *  
+         *  Freed blocks of memory are coalesced with adjacent free blocks by a left & right sweep.
+         *  A check is performed on the memory blocks to the left of the passed in pointer, if the
+         *  blocks are positive, coalescing is performed.
+         *  
+         *  Once coalescing for the LHS is performed, a check is performed to check if the memory blocks
+         *  to the immediate right are free
+         *  If these blocks are free as well a coalescing of the right hand side is performed.
+         *  
+         *  
          */
         void deallocate (pointer p, size_type n) {
             // <your code>
-
             /*
                 number of blocks to free is n
                 point to right after sentinel is p
@@ -320,6 +337,7 @@ class Allocator {
         //    assert(valid());
         }
 
+
         // -------
         // destroy
         // -------
@@ -337,9 +355,6 @@ class Allocator {
          * O(1) in time
          * <your documentation>
          */
-
-        // int& operator [] (int i) {
-        //     return *reinterpret_cast<int*>(&a[i]);}
 
         const int& operator [] (int i) const {
             return *reinterpret_cast<const int*>(&a[i]);}};
