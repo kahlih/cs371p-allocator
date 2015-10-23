@@ -283,10 +283,11 @@ class Allocator {
                 point to right after sentinel is p
             // */
 
-                // //debug to show Sentinels prior to being freed
-                // cout<<"Sentinel1: "<< *(p-1) << endl << endl;
-                // cout<<"Sentinel2: "<< *(p+(1*n)) << endl << endl;
             char* convertedPoint = reinterpret_cast<char*>(p);
+            if ( (convertedPoint < &a[4]) || (convertedPoint > &a[N-5]) || p == 0){
+                throw std::invalid_argument("Invalid Pointer");
+            }
+
             //go to LHS sentinel and make it positive
 
             char* lhsPointer = convertedPoint-1*sizeof(int);
@@ -309,15 +310,17 @@ class Allocator {
             */
             char* lhsAdjSent = lhsPointer - 4;
             if(convert(*lhsAdjSent) > 0) {
+                int v = *lhsAdjSent;
                 int chunkLeft = convert(*lhsAdjSent)+lhsSentinel + 8;
-                convert(*(lhsAdjSent - (*lhsAdjSent) - 4)) = chunkLeft;
+                convert(*(lhsAdjSent - v - 4)) = chunkLeft;
 
                 convert(*lhsPointer) = 0;  //zeroed inner sentinels
                 convert(*lhsAdjSent) = 0;  //zeroed inner Sentinels
 
-                convert(*rhsPointer) = convert(*(lhsAdjSent - (*lhsAdjSent) - 4)); //converted rightmost sentinel to new value
+                convert(*rhsPointer) = convert(*(lhsAdjSent - v - 4)); //converted rightmost sentinel to new value
                 lhsPointer = (lhsAdjSent - (*lhsAdjSent) - 4); //new lhsSentinel
             }
+
             char* rhsAdjSent = rhsPointer + 4;
             if(convert(*rhsAdjSent) > 0){
                 int chunkRight = convert(*rhsAdjSent) + rhsSentinel + 8;
