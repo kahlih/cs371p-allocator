@@ -128,9 +128,13 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_3);
         FRIEND_TEST(TestCustomValid, valid_4);
         FRIEND_TEST(TestCustomDeallocate, simpleDealloc);
+        FRIEND_TEST(TestCustomDeallocate, coalesceLeftDealloc);
 
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}
+        
+        int& convert (char& c) {
+            return *reinterpret_cast<int*>(&c);}
 
     public:
         // ------------
@@ -179,7 +183,6 @@ class Allocator {
                 if ((begin > 0)){
 
                     if(begin == chunk){ //can
-                        cout << "ENTERED" << endl;
                         (*this)[sentinel] = -begin;
                         (*this)[sentinel+begin+4] = -begin;
                         return reinterpret_cast<pointer>(a+sentinel+4);   
@@ -255,78 +258,67 @@ class Allocator {
         void deallocate (pointer p, size_type n) {
             // <your code>
 
-
-
-
-
-
-
-
-
-
-
-
             /*
                 number of blocks to free is n
                 point to right after sentinel is p
             // */
 
-            //     // //debug to show Sentinels prior to being freed
-            //     // cout<<"Sentinel1: "<< *(p-1) << endl << endl;
-            //     // cout<<"Sentinel2: "<< *(p+(1*n)) << endl << endl;
-            //     char* convertedPoint = reinterpret_cast<char*>(p);
+                // //debug to show Sentinels prior to being freed
+                // cout<<"Sentinel1: "<< *(p-1) << endl << endl;
+                // cout<<"Sentinel2: "<< *(p+(1*n)) << endl << endl;
+            char* convertedPoint = reinterpret_cast<char*>(p);
+            //go to LHS sentinel and make it positive
 
-            // //go to LHS sentinel and make it positive
+            char* lhsPointer = convertedPoint-1*sizeof(int);
+            int lhsSentinel = *(lhsPointer);
+                    lhsSentinel = abs(lhsSentinel);
+            //go to RHS sentinel and make it positive
+            char* rhsPointer = convertedPoint + lhsSentinel;
+            int rhsSentinel = *(rhsPointer);
+                rhsSentinel = abs(rhsSentinel);
 
-            //     char* lhsPointer = convertedPoint-1*sizeof(int);
-            //     int lhsSentinel = *(lhsPointer);
-            //         lhsSentinel = abs(lhsSentinel);
-            // //go to RHS sentinel and make it positive
-            //     char* rhsPointer = convertedPoint + lhsSentinel;
-            //     int rhsSentinel = *(rhsPointer);
-            //         rhsSentinel = abs(rhsSentinel);
+                //debug check to show that Sentinels are freed
+                // cout<<"flippedSentinel1: "<< lhsSentinel << endl;
+                // cout<<"flippedSentinel2: "<< rhsSentinel << endl << endl;
 
-            //     //debug check to show that Sentinels are freed
-            //     // cout<<"flippedSentinel1: "<< lhsSentinel << endl;
-            //     // cout<<"flippedSentinel2: "<< rhsSentinel << endl << endl;
+            convert(*lhsPointer) = lhsSentinel;
+            convert(*rhsPointer) = rhsSentinel;
 
+            /*
+                conditional will check if the adjacent sentinel to lhsSentinel is free
+            */
+            char* lhsAdjSent = lhsPointer - sizeof(int);
+            if(convert(*lhsAdjSent) > 0) {
+                int chunkLeft = convert(*lhsAdjSent)+lhsSentinel + 8;
+                convert(*(lhsAdjSent - (*lhsAdjSent) - 4)) = chunkLeft;
 
-            //     /*
-            //         conditional will check if the adjacent sentinel to lhsSentinel is free
-            //     */
-            //     char* lhsAdjSent = lhsPointer - sizeof(int);
+                convert(*lhsPointer) = 0;  //zeroed inner sentinels
+                convert(*lhsAdjSent) = 0;  //zeroed inner Sentinels
 
-            //     if(*lhsAdjSent > 0) {
-            //         int chunkLeft = *lhsAdjSent+lhsSentinel;
-            //         char* leftJumpPointer = lhsAdjSent -(*lhsAdjSent - sizeof(int));
-            //         *leftJumpPointer = chunkLeft + 8; //to account for the inner sentinels
+                convert(*rhsPointer) = convert(*(lhsAdjSent - (*lhsAdjSent) - 4)); //converted rightmost sentinel to new value
+                lhsPointer = (lhsAdjSent - (*lhsAdjSent) - 4); //new lhsSentinel
+            }
+            char* rhsAdjSent = rhsPointer + sizeof(int);
 
-            //         *lhsPointer = 0;  //zeroed inner sentinels
-            //         *lhsAdjSent = 0;  //zeroed inner Sentinels
+            if(convert(*rhsAdjSent) > 0){
+                int chunkRight = *rhsAdjSent + rhsSentinel;
 
-            //             *rhsPointer = *leftJumpPointer; //converted rightmost sentinel to new value
-            //              lhsPointer = leftJumpPointer; //new lhsSentinel
-            //     }
+                char* rightJumpPointer = rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4));
+                *rightJumpPointer = chunkRight + 8;
 
-            //     char* rhsAdjSent = rhsPointer + sizeof(int);
+                *rhsPointer = 0;
+                *rhsAdjSent = 0;
 
-            //     if(*rhsAdjSent > 0){
-            //         int chunkRight = *rhsAdjSent + rhsSentinel;
-            //         char* rightJumpPointer = rhsAdjSent + (*rhsAdjSent + sizeof(int));
-            //         *rightJumpPointer = chunkRight + 8;
-
-            //         *rhsPointer = 0;
-            //         *rhsAdjSent = 0;
-
-            //         *lhsPointer = *rightJumpPointer;
-            //          rhsPointer = rightJumpPointer;
-            //     }
-
+                *lhsPointer = *rightJumpPointer;
+                 rhsPointer = rightJumpPointer;
+            }
 
 
 
 
-            assert(valid());}
+
+        //    assert(valid());
+        }
 
         // -------
         // destroy
