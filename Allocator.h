@@ -134,6 +134,9 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_4);
         FRIEND_TEST(TestCustomDeallocate, simpleDealloc);
         FRIEND_TEST(TestCustomDeallocate, coalesceLeftDealloc);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_1);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_2);
+        FRIEND_TEST(TestCustomDeallocate, Dealloc_3);
 
 
         int& operator [] (int i) {

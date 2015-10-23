@@ -330,7 +330,7 @@
 // }
 
 
-TEST(TestCustomDeallocate, coalesceLeftDealloc){
+TEST(TestCustomDeallocate, Dealloc_1){
     Allocator<int,44> x;
     x[0] = 4;
     x[8] = 4;
@@ -342,3 +342,37 @@ TEST(TestCustomDeallocate, coalesceLeftDealloc){
     x.deallocate(&x[16],2);
     ASSERT_EQ(x[0], 20);
 }
+
+
+TEST(TestCustomDeallocate, Dealloc_2){
+    Allocator<int,36> x;
+    x[0] = 8;
+    x[8] = 8;
+    x[12] = -12;
+    x[20] = -12;
+
+    ASSERT_EQ(x[0],8);
+    x.deallocate(&x[16],3);
+    ASSERT_EQ(x[0], 28);
+}
+
+
+TEST(TestCustomDeallocate, Dealloc_3){
+    Allocator<int,48> x;
+    x[0] = -4;
+    x[8] = -4;
+    x[12] = 4;
+    x[20] = 4;
+    x[24] = -4;
+    x[32] = -4;
+    x[36] = 4;
+    x[44] = 4;
+
+    ASSERT_EQ(x[0],4);
+    x.deallocate(&x[0],1);
+    x.deallocate(&x[24],1);
+    ASSERT_EQ)(x[0], 40);
+}
+
+
+
