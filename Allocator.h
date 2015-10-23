@@ -304,7 +304,7 @@ class Allocator {
             /*
                 conditional will check if the adjacent sentinel to lhsSentinel is free
             */
-            char* lhsAdjSent = lhsPointer - sizeof(int);
+            char* lhsAdjSent = lhsPointer - 4;
             if(convert(*lhsAdjSent) > 0) {
                 int chunkLeft = convert(*lhsAdjSent)+lhsSentinel + 8;
                 convert(*(lhsAdjSent - (*lhsAdjSent) - 4)) = chunkLeft;
@@ -315,19 +315,25 @@ class Allocator {
                 convert(*rhsPointer) = convert(*(lhsAdjSent - (*lhsAdjSent) - 4)); //converted rightmost sentinel to new value
                 lhsPointer = (lhsAdjSent - (*lhsAdjSent) - 4); //new lhsSentinel
             }
-            char* rhsAdjSent = rhsPointer + sizeof(int);
-
+            char* rhsAdjSent = rhsPointer + 4;
             if(convert(*rhsAdjSent) > 0){
-                int chunkRight = *rhsAdjSent + rhsSentinel;
+                int chunkRight = convert(*rhsAdjSent) + rhsSentinel + 8;
+                convert(*(rhsAdjSent + convert(*rhsAdjSent) + 4)) = chunkRight;
 
-                char* rightJumpPointer = rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4));
-                *rightJumpPointer = chunkRight + 8;
+                convert(*rhsPointer) = 0;
+                convert(*lhsAdjSent) = 0;
 
-                *rhsPointer = 0;
-                *rhsAdjSent = 0;
+                convert(*lhsPointer) = convert(*(rhsAdjSent + convert(*rhsAdjSent) + 4));
+                rhsPointer = (rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4)));
 
-                *lhsPointer = *rightJumpPointer;
-                 rhsPointer = rightJumpPointer;
+                // char* rightJumpPointer = rhsAdjSent + (*(lhsAdjSent - (*lhsAdjSent) - 4));
+                // *rightJumpPointer = chunkRight;
+
+                // *rhsPointer = 0;
+                // *rhsAdjSent = 0;
+
+                // *lhsPointer = *rightJumpPointer;
+                //  rhsPointer = rightJumpPointer;
             }
 
 
