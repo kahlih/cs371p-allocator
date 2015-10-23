@@ -90,12 +90,6 @@ class Allocator {
                     // cout << "begin: " << begin << "  and end: " << end << endl;
         			return false; }
 
-                //sign check
-                // if(signbit(a[sentinel]) != signbit(a[sentinel+begin+4])) {
-                //     cout << "Failed in checking if sentinel signs are equal" <<endl;
-                //     cout << "begin: " << begin << "  and end: " << end << endl;
-                //     return false;}    
-
                 //check for adjacent free blocks
                 //take current sentinel and check behind
                 if(sentinel-4 > 0 && sentinel > 0) {
@@ -104,11 +98,7 @@ class Allocator {
                         return false;
                     }
                 }
-
-
         		
-
-
         		sentinel += (begin + 8);
     	    }
             return true;}
@@ -116,7 +106,13 @@ class Allocator {
         /**
          * O(1) in space
          * O(1) in time
-         * <your documentation>
+         * Custom Tests were created to demonstrate validity of methods
+         * and also to help the development process.
+         *
+         * The purpose of FRIEND_TEST was to allow the test cases to have access to
+         * to have access to the custom index operator that was implemented by
+         * Professor downing.
+         *
          * https://code.google.com/p/googletest/wiki/AdvancedGuide#Private_Class_Members
          */
         FRIEND_TEST(TestAllocator2, index);
@@ -127,6 +123,7 @@ class Allocator {
         FRIEND_TEST(TestCustomValid, valid_2);
         FRIEND_TEST(TestCustomValid, valid_3);
         FRIEND_TEST(TestCustomValid, valid_4);
+        FRIEND_TEST(TestDealloc, deallocate_3);
 
         int& operator [] (int i) {
             return *reinterpret_cast<int*>(&a[i]);}
@@ -258,56 +255,7 @@ class Allocator {
                 point to right after sentinel is p
             */
 
-                // //debug to show Sentinels prior to being freed
-                // cout<<"Sentinel1: "<< *(p-1) << endl << endl;
-                // cout<<"Sentinel2: "<< *(p+(1*n)) << endl << endl;
-                char* convertedPoint = reinterpret_cast<char*>(p);
 
-            //go to LHS sentinel and make it positive
-
-                char* lhsPointer = convertedPoint-1*sizeof(int);
-                int lhsSentinel = *(lhsPointer);
-                    lhsSentinel = abs(lhsSentinel);
-            //go to RHS sentinel and make it positive
-                char* rhsPointer = convertedPoint + lhsSentinel;
-                int rhsSentinel = *(rhsPointer);
-                    rhsSentinel = abs(rhsSentinel);
-
-                //debug check to show that Sentinels are freed
-                // cout<<"flippedSentinel1: "<< lhsSentinel << endl;
-                // cout<<"flippedSentinel2: "<< rhsSentinel << endl << endl;
-
-
-                /*
-                    conditional will check if the adjacent sentinel to lhsSentinel is free
-                */
-                char* lhsAdjSent = lhsPointer - sizeof(int);
-
-                if(*lhsAdjSent > 0) {
-                    int chunkLeft = *lhsAdjSent+lhsSentinel;
-                    char* leftJumpPointer = lhsAdjSent -(*lhsAdjSent - sizeof(int));
-                    *leftJumpPointer = chunkLeft + 8; //to account for the inner sentinels
-
-                    *lhsPointer = 0;  //zeroed inner sentinels
-                    *lhsAdjSent = 0;  //zeroed inner Sentinels
-
-                        *rhsPointer = *leftJumpPointer; //converted rightmost sentinel to new value
-                         lhsPointer = leftJumpPointer; //new lhsSentinel
-                }
-
-                char* rhsAdjSent = rhsPointer + sizeof(int);
-
-                if(*rhsAdjSent > 0){
-                    int chunkRight = *rhsAdjSent + rhsSentinel;
-                    char* rightJumpPointer = rhsAdjSent + (*rhsAdjSent + sizeof(int));
-                    *rightJumpPointer = chunkRight + 8;
-
-                    *rhsPointer = 0;
-                    *rhsAdjSent = 0;
-
-                    *lhsPointer = *rightJumpPointer;
-                     rhsPointer = rightJumpPointer;
-                }
 
 
 
@@ -332,9 +280,6 @@ class Allocator {
          * O(1) in time
          * <your documentation>
          */
-
-        // int& operator [] (int i) {
-        //     return *reinterpret_cast<int*>(&a[i]);}
 
         const int& operator [] (int i) const {
             return *reinterpret_cast<const int*>(&a[i]);}};

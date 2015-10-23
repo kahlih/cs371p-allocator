@@ -319,3 +319,23 @@ TEST(TestCustomAllocate, oddTypeAlloc){
     e.construct(p,v);
     ASSERT_EQ(e[0], -(sizeof(Elephant)));
 }
+
+
+TEST(TestDealloc, deallocate_3)
+{
+    Allocator<double, 100> x;
+    double* p1 = x.allocate(1);
+    double* p2 = x.allocate(2);
+    double* p3 = x.allocate(1);
+    x.deallocate(p1,1);
+    ASSERT_EQ(x[0],x[12]);
+    ASSERT_EQ(x[16],x[36]);
+    ASSERT_EQ(x[40],x[52]);
+    ASSERT_EQ(x[56],x[96]);
+    x.deallocate(p2,2);
+    ASSERT_EQ(x[0],x[36]);
+    ASSERT_EQ(x[40],x[52]);
+    ASSERT_EQ(x[56],x[96]);
+    x.deallocate(p3,1);
+    ASSERT_EQ(true,x.valid());
+}
