@@ -71,7 +71,8 @@ class Allocator {
         /**
          * O(1) in space
          * O(n) in time
-         * <your documentation>
+         * 
+         *  The purpose of valid is to check the current allocation
          */
         bool valid () const {
     	    int sentinel = 0;
@@ -247,7 +248,19 @@ class Allocator {
          * O(1) in time
          * after deallocation adjacent free blocks must be coalesced
          * throw an invalid_argument exception, if p is invalid
-         * <your documentation>
+         * 
+         *  Deallocation is performed by converting sentinels respective to the current
+         *  pointer passed in to "freed" blocks.
+         *  
+         *  Freed blocks of memory are coalesced with adjacent free blocks by a left & right sweep.
+         *  A check is performed on the memory blocks to the left of the passed in pointer, if the
+         *  blocks are positive, coalescing is performed.
+         *  
+         *  Once coalescing for the LHS is performed, a check is performed to check if the memory blocks
+         *  to the immediate right are free
+         *  If these blocks are free as well a coalescing of the right hand side is performed.
+         *  
+         *  
          */
         void deallocate (pointer p, size_type n) {
             // <your code>
